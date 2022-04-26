@@ -37,7 +37,7 @@ struct MyStruct
 void readfile(MyStruct& employee)
 {
 
-    fstream file("statement.txt", fstream::in);
+    fstream file("statement.txt", fstream::in | fstream::binary);
     //fstream cash("cash.txt");
     if (file.is_open())
     {
@@ -81,7 +81,7 @@ void readfile(MyStruct& employee)
 
 void writefile(MyStruct& employee)
 {
-    fstream file("statement.txt", fstream::out | ios::app);
+    fstream file("statement.txt", fstream::out | fstream::binary | ios::app);
     //fstream cash("cash.txt");
     if (file.is_open())
     {
@@ -172,6 +172,7 @@ int main()
             employee.nCash = stoi(temp);
 
             cin >> temp;
+            temp += "\n";
             employee.cCurrency;
 
             writefile(employee);
