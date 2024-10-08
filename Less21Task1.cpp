@@ -1,4 +1,4 @@
-﻿/*
+/*
 Вы уже создавали программу чтения и записи ведомости. Теперь её надо будет обобщить и дополнить использованием структур.
 
 Формат ведомости прежний. Сначала идёт имя и фамилия получателя денежных средств, далее — дата выдачи в формате ДД.ММ.ГГГГ.,
@@ -27,88 +27,53 @@ using namespace std;
 
 struct MyStruct
 {
-    string cFirstname = "unknown";
-    string cSecondname = "unknown";
-    string cDate = "01.01.1900";
-    int nCash = 0;
-    string cCurrency = "rub\n";
+    string cFirstname{ "unknown" };
+    string cSecondname{ "unknown" };
+    string cDate{ "01.01.1900" };
+    int nCash{ 0 };
+    string cCurrency{ "rub" };
 };
 
 void readfile(MyStruct& employee)
 {
 
     fstream file("statement.txt", fstream::in);
-    //fstream cash("cash.txt");
+    
     if (file.is_open())
     {
-        //file.read((char*)money.data(), money.size() * sizeof(int));
+        string s{ "" };
+
         while (!file.eof())
         {
-            int len;
-
-            file.read((char*)&len, sizeof(len));
-            employee.cFirstname.resize(len);
-            file.read((char*)employee.cFirstname.c_str(), len);
-            cout << employee.cFirstname;
-
-            file.read((char*)&len, sizeof(len));
-            employee.cSecondname.resize(len);
-            file.read((char*)employee.cSecondname.c_str(), len);
-            cout << employee.cSecondname;
-
-            file.read((char*)&len, sizeof(len));
-            employee.cDate.resize(len);
-            file.read((char*)employee.cDate.c_str(), len);
-            cout << employee.cDate;
-
-            file.read((char*)employee.nCash, sizeof(employee.nCash));
-            cout << employee.nCash;
-
-            file.read((char*)&len, sizeof(len));
-            employee.cCurrency.resize(len);
-            file.read((char*)employee.cCurrency.c_str(), len);
-            cout << employee.cCurrency;   
+            getline(file, s);
+            cout << s << endl;
         };     
      
         file.close();
     }
     else
     {
-        // show error message
         cout << "error opening TXT";
     }
 }
 
 void writefile(MyStruct& employee)
 {
-    fstream file("statement.txt", fstream::out | ios::app);
-    //fstream cash("cash.txt");
+    ofstream file("statement.txt", fstream::out | ios_base::app);
+    
     if (file.is_open())
     {
-        //file.write((char*)money.data(), money.size() * sizeof(int));
-        int len = employee.cFirstname.length();
-        file.write((char*)&len, sizeof(len));
-        file.write(employee.cFirstname.c_str(), len);
         
-        len = employee.cSecondname.length();
-        file.write((char*)&len, sizeof(len));
-        file.write(employee.cSecondname.c_str(), len);
-
-        len = employee.cDate.length();
-        file.write((char*)&len, sizeof(len));
-        file.write(employee.cDate.c_str(), len);
-
-        file.write((char*)&employee.nCash, sizeof(employee.nCash));
-
-        len = employee.cCurrency.length();
-        file.write((char*)&len, sizeof(len));
-        file.write(employee.cCurrency.c_str(), len);
+        file << employee.cFirstname << " "
+            << employee.cSecondname << " "
+            << employee.cDate << " "
+            << employee.nCash << " "
+            << employee.cCurrency << endl;
 
         file.close();
     }
     else
     {
-        // show error message
         cout << "error opening TXT";
     }
 }
@@ -116,40 +81,28 @@ void writefile(MyStruct& employee)
 
 int main()
 {
-   // MyStruct employee = { "Name", "Secondname", "24.12.2022"};
-   // employee.nCash = 3000;
     MyStruct employee;
-    string sInput;
+    string sInput{ "" };
 
-    cout << """add"" for add new write" << endl;
-    cout << """read"" for read all writes" << endl;
-    cout << """-1"" for exit" << endl;
+    cout << """add"" - for add new write" << endl;
+    cout << """read"" - for read all writes" << endl;
+    cout << """-1"" - for exit" << endl;
 
     while (sInput != "-1")
     {
         cout << "input comand: ";
         cin >> sInput;
+        if (sInput == "-1") break;
 
         if (sInput == "add")
         {
-            //MyStruct employee;
-            string temp;
-            //string firstname, secondname, date;
-            //int cash;
+            string temp{ "" };
             cout << "Input: Firstname Secondname Date(DD.MM.YYYY) Cash Currency " << endl;
-            //cin >> firstname >> secondname >> date >> cash;
-            
-            cin >> temp;
-            employee.cFirstname = temp;
 
-            cin >> temp;
-            employee.cSecondname = temp;
-
-            cin >> temp;
+            cin >> employee.cFirstname >> employee.cSecondname >> temp;
             bool dateOk = false;
             while (!dateOk)
             {
-                //string to int
                 if (temp.size() != 10)
                 {
                     cout << "invalid date, try again1" << endl;
@@ -161,7 +114,7 @@ int main()
                 int year = stoi(temp.substr(6, 4));
                 if (day > 0 && day < 32
                     && month > 0 && month < 13
-                    && year > 1970 && year < 2222) dateOk = true;
+                    && year > 0 && year < 9999) dateOk = true;
                 if (dateOk) break;
                 cout << "invalid date, try again2" << endl;
                 cin >> temp;
@@ -171,9 +124,7 @@ int main()
             cin >> temp;
             employee.nCash = stoi(temp);
 
-            cin >> temp;
-            temp += "\n";
-            employee.cCurrency;
+            cin >> employee.cCurrency;
 
             writefile(employee);
         }
@@ -186,49 +137,4 @@ int main()
             cout << "error command, try again" << endl;
         }
     }
-
-    //cout << "input comand: ";
-    //cin >> sInput;
-
-
-
-    //ofstream statement("statement.txt", ios::app);
-    //if (statement.is_open())
-    //{
-
-    //    string firstname, secondname, date;
-    //    int cash;
-    //    cout << "Input: Firstname Secondname Date(DD.MM.YYYY) Cash " << endl;
-    //    cin >> firstname >> secondname >> date >> cash;
-
-    //    bool dateOk = false;
-    //    while (!dateOk)
-    //    {
-
-    //        //string to int
-    //        if (date.size() != 10)
-    //        {
-    //            cout << "invalid date, try again1" << endl;
-    //            cin >> date;
-    //            continue;
-    //        }
-    //        int day = stoi(date.substr(0, 2));
-    //        int month = stoi(date.substr(3, 2));
-    //        int year = stoi(date.substr(6, 4));
-    //        if (day > 0 && day < 32
-    //            && month > 0 && month < 13
-    //            && year > 1970 && year < 2222) dateOk = true;
-    //        if (dateOk) break;
-    //        cout << "invalid date, try again2" << endl;
-    //        cin >> date;
-    //    }
-
-    //    statement << firstname << " " << secondname << " " << date << " " << cash << "rub" << endl;
-    //}
-    //else
-    //{
-    //    // show message:
-    //    cout << "Error opening file";
-    //}
-    //statement.close();
 }
